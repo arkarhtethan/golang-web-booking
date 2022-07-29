@@ -3,9 +3,9 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/arkarhtethan/go-web/pkg/config"
-	"github.com/arkarhtethan/go-web/pkg/models"
-	"github.com/arkarhtethan/go-web/pkg/render"
+	"github.com/arkarhtethan/golang-web-booking/pkg/config"
+	"github.com/arkarhtethan/golang-web-booking/pkg/models"
+	"github.com/arkarhtethan/golang-web-booking/pkg/render"
 )
 
 type Repository struct {
