@@ -8,15 +8,16 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/arkarhtethan/golang-web-booking/pkg/config"
-	"github.com/arkarhtethan/golang-web-booking/pkg/models"
+	"github.com/arkarhtethan/golang-web-booking/internal/config"
+	"github.com/arkarhtethan/golang-web-booking/internal/models"
+	"github.com/justinas/nosurf"
 )
 
 var functions = template.FuncMap{}
 var app *config.AppConfig
 
-func AddDefaultData(td *models.TemplateData) *models.TemplateData {
-
+func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.CSRFToken = nosurf.Token(r)
 	return td
 }
 
@@ -24,7 +25,7 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
-func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 	if app.UseCache {
 		tc = app.TempateCache
@@ -32,11 +33,12 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData)
 		tc, _ = CreateTemplateCache()
 	}
 	t, ok := tc[tmpl]
+	fmt.Println(t, ok)
 	if !ok {
 		log.Fatal("Cannot find template.")
 	}
 	buf := new(bytes.Buffer)
-	td = AddDefaultData(td)
+	td = AddDefaultData(td, r)
 	_ = t.Execute(buf, td)
 	_, err := buf.WriteTo(w)
 	if err != nil {
@@ -57,6 +59,7 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 		ts, err := template.New(name).Funcs(functions).ParseFiles(page)
 		if err != nil {
 			return myCache, nil
+
 		}
 		matches, err := filepath.Glob("./templates/*.layout.html")
 		if err != nil {

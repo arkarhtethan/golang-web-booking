@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/alexedwards/scs/v2"
-	"github.com/arkarhtethan/golang-web-booking/pkg/config"
-	"github.com/arkarhtethan/golang-web-booking/pkg/handlers"
-	"github.com/arkarhtethan/golang-web-booking/pkg/render"
+	"github.com/arkarhtethan/golang-web-booking/internal/config"
+	"github.com/arkarhtethan/golang-web-booking/internal/handlers"
+	"github.com/arkarhtethan/golang-web-booking/internal/render"
 )
 
 const PORT = ":8080"
@@ -38,12 +38,12 @@ func main() {
 
 	render.NewTemplates(&app)
 
-	fmt.Printf("Server is running at %s", PORT)
-
 	srv := &http.Server{
 		Addr:    PORT,
 		Handler: routes(&app),
 	}
+
+	fmt.Printf("Server is running at %s\n", PORT)
 	err = srv.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
