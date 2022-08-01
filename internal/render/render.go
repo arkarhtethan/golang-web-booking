@@ -63,7 +63,6 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 		ts, err := template.New(name).Funcs(functions).ParseFiles(page)
 		if err != nil {
 			return myCache, nil
-
 		}
 		matches, err := filepath.Glob(fmt.Sprintf("%s/*.layout.html", pathToTemplates))
 		if err != nil {
