@@ -6,20 +6,24 @@ import (
 	"net/http"
 
 	"github.com/arkarhtethan/golang-web-booking/internal/config"
+	"github.com/arkarhtethan/golang-web-booking/internal/driver"
 	"github.com/arkarhtethan/golang-web-booking/internal/forms"
 	"github.com/arkarhtethan/golang-web-booking/internal/helpers"
 	"github.com/arkarhtethan/golang-web-booking/internal/models"
 	"github.com/arkarhtethan/golang-web-booking/internal/render"
+	"github.com/arkarhtethan/golang-web-booking/internal/repository"
+	"github.com/arkarhtethan/golang-web-booking/internal/repository/dbrepo"
 )
 
 type Repository struct {
 	App *config.AppConfig
+	DB  repository.DatabaseRepo
 }
 
 var Repo *Repository
 
-func NewRepo(a *config.AppConfig) *Repository {
-	return &Repository{App: a}
+func NewRepo(a *config.AppConfig, db *driver.DB) *Repository {
+	return &Repository{App: a, DB: dbrepo.NewPostgresRepo(db.SQL, a)}
 }
 
 func NewHandlers(r *Repository) {
