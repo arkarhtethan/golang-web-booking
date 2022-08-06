@@ -25,11 +25,11 @@ func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateDa
 	return td
 }
 
-func NewTemplates(a *config.AppConfig) {
+func NewRenderer(a *config.AppConfig) {
 	app = a
 }
 
-func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) error {
+func Template(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) error {
 	var tc map[string]*template.Template
 	if app.UseCache {
 		tc = app.TempateCache
@@ -54,24 +54,25 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *mod
 func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 	pages, err := filepath.Glob(fmt.Sprintf("%s/*.page.html", pathToTemplates))
+
 	if err != nil {
 		fmt.Println("error parsing template : ", err)
-		return myCache, nil
+		return myCache, err
 	}
 	for _, page := range pages {
 		name := filepath.Base(page)
 		ts, err := template.New(name).Funcs(functions).ParseFiles(page)
 		if err != nil {
-			return myCache, nil
+			return myCache, err
 		}
 		matches, err := filepath.Glob(fmt.Sprintf("%s/*.layout.html", pathToTemplates))
 		if err != nil {
-			return myCache, nil
+			return myCache, err
 		}
 		if len(matches) > 0 {
 			ts, err = ts.ParseGlob(fmt.Sprintf("%s/*.layout.html", pathToTemplates))
 			if err != nil {
-				return myCache, nil
+				return myCache, err
 			}
 		}
 		myCache[name] = ts

@@ -48,6 +48,10 @@ func main() {
 func run() (*driver.DB, error) {
 
 	gob.Register(models.Reservation{})
+	gob.Register(models.User{})
+	gob.Register(models.Room{})
+	gob.Register(models.RoomRestriction{})
+	gob.Register(models.Restriction{})
 
 	app.InProduction = false
 
@@ -66,21 +70,21 @@ func run() (*driver.DB, error) {
 
 	// connect to database
 	log.Println("Connecting to database")
-	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=bookings user=root password=root")
+	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=booking user=root password=root")
 	if err != nil {
 		log.Fatal("Cannot connect to database! Dying...")
 	}
 	log.Println("Connected to database")
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
-		log.Fatal("Cannot create template cache.")
+		log.Fatal("Cannot create template cache.", err)
 		return nil, err
 	}
 	app.TempateCache = tc
 
 	repo := handlers.NewRepo(&app, db)
 	handlers.NewHandlers(repo)
-	render.NewTemplates(&app)
+	render.NewRenderer(&app)
 	helpers.NewHelpers(&app)
 
 	return db, nil
