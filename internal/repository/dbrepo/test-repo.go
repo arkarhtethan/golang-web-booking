@@ -35,3 +35,53 @@ func (m *testDbRepo) GetRoomByID(id int) (models.Room, error) {
 	}
 	return room, nil
 }
+
+func (m *testDbRepo) GetUserByID(id int) (models.User, error) {
+	var user models.User
+	return user, nil
+}
+
+func (m *testDbRepo) Authenticate(email, password string) (int, string, error) {
+	return 0, "", nil
+}
+
+func (m *testDbRepo) UpdateUser(u models.User) error {
+	return nil
+}
+
+func (m *testDbRepo) AllReservations() ([]models.Reservation, error) {
+	var reservations []models.Reservation
+	return reservations, nil
+}
+
+func (m *testDbRepo) AllNewReservations() ([]models.Reservation, error) {
+	var reservations []models.Reservation
+	return reservations, nil
+}
+
+func (m *testDbRepo) GetReservationByID(id int) (models.Reservation, error) {
+	var reservations models.Reservation
+	return reservations, nil
+}
+
+func (m *testDbRepo) UpdateReservation(res models.Reservation) error {
+	return nil
+}
+
+func (m *testDbRepo) DeleteReservation(id int) error {
+	return nil
+}
+
+func (m *testDbRepo) UpdateProcessedForReservation(id, processed int) error {
+	return nil
+}
+
+func (m *testDbRepo) AllRooms() ([]models.Room, error) {
+	var rooms []models.Room
+	return rooms, nil
+}
+
+func (m *testDbRepo) GetRestrictionsForRoomByDate(roomID int, start, end time.Time) ([]models.RoomRestriction, error) {
+	var rooms []models.RoomRestriction
+	return rooms, nil
+}

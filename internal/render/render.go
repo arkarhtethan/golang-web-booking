@@ -7,13 +7,19 @@ import (
 	"html/template"
 	"net/http"
 	"path/filepath"
+	"time"
 
 	"github.com/arkarhtethan/golang-web-booking/internal/config"
 	"github.com/arkarhtethan/golang-web-booking/internal/models"
 	"github.com/justinas/nosurf"
 )
 
-var functions = template.FuncMap{}
+var functions = template.FuncMap{
+	"humanDate": HumanDate,
+	"formatDate": FormatDate,
+	"iterate": Iterate,
+	"add": Add,
+}
 var app *config.AppConfig
 var pathToTemplates = "./templates"
 
@@ -22,11 +28,35 @@ func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateDa
 	td.Error = app.Session.PopString(r.Context(), "error")
 	td.Warning = app.Session.PopString(r.Context(), "warning")
 	td.CSRFToken = nosurf.Token(r)
+	if app.Session.Exists(r.Context(), "user_id") {
+		td.IsAuthenticated = 1
+	}
 	return td
 }
 
 func NewRenderer(a *config.AppConfig) {
 	app = a
+}
+
+func Iterate(count int) []int {
+ var i int
+ var items []int
+ for i = 0; i < count; i++ {
+	 items = append(items, i)
+ }
+ return items
+}
+
+func Add(i,ii int) int {
+	return i+ii
+}
+
+func HumanDate(t time.Time) string {
+	return t.Format("2006-01-02")
+}
+
+func FormatDate(t time.Time,f string) string {
+	return t.Format(f)
 }
 
 func Template(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) error {
